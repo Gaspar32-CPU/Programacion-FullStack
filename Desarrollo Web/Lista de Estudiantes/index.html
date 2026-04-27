@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LISTA DE ESTUDIANTES</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <button onclick="showStudents()" id="show-students-btn">Ver Estudiantes</button>
+        <button onclick="addStudent()" id="add-student-btn">Agregar Estudiante</button>
+        <div id="container-list">
+            <h1>Lista de Estudiantes</h1>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Fecha de Nacimiento</th>
+                        <th>Edad</th>
+                    </tr>
+                </thead>
+                <tbody id="studentTableBody">
+                    
+                </tbody>
+            </table>
+        </div>
+        <div id="container-form">
+            <h1>Agregar Estudiantes</h1>
+            <form action="#" id="addStudentForm">
+                <label for="nombre">Nombre del Estudiante</label><br>
+                <input type="text" id="nombre"><br>
+                <label for="fnacimiento">Fecha de Nacimiento</label><br>
+                <input type="date" id="fnacimiento"><br>
+                <input type="submit" value="Submit" class="submit-buttonG">
+            </form> 
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

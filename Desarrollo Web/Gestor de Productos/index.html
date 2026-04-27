@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Technological Products</title>
+</head>
+<body>
+    <header>
+        <img src="Logo-Tech_products.png" alt="Logo" class="logo">
+        <form action="/buscar" method="get" class="searchForm">
+            <input type="search" name="q" placeholder="Buscar..." aria-label="Buscar en el sitio" class="searchInput">
+            <button type="submit">Buscar</button>
+        </form>
+        <span class="user-pic">MA</span>
+    </header>
+    <div class="container">
+        <aside>
+            <form action="" id="form" class="createForm">
+                <label for="name">Product Name</label>
+                <input id="name" type="text" required>
+                <label for="price">Price</label>
+                <input type="number" id="price" required inputmode="numeric" pattern="[0-9]*">
+                <label for="categories-selector">Category</label>
+                <select name="categories" id="categories-selector">
+                    <option value=""></option>
+                    <option value="componentes-pc">Componentes de PC</option>
+                    <option value="perifericos">Periféricos</option>
+                    <option value="electrodomesticos">Electrodomésticos</option>
+                    <option value="fotografia">Fotografía</option>
+                    <option value="redes">Redes</option>
+                </select>
+                <button type="submit" class="addBtn">Create</button>
+            </form>
+        </aside>
+        <main>
+            <ul id="list">
+            </ul>
+        </main>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>l

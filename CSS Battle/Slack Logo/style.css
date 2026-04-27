@@ -1,0 +1,29 @@
+body {
+    margin: 0;
+    height: 100vh;
+
+    background-image: 
+        linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)),
+        url("logo.png");
+
+    background-size: contain; /* 👈 clave */
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.block {
+    display: flex;
+    flex-direction: row;
+    gap: 50px;
+    background-color: red;
+}
+
+.full {
+    width: 40px;
+    height: 20px;
+}
+
+.medium {
+    width: 40px;
+    height: 20px;
+}

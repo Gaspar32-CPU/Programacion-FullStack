@@ -142,10 +142,17 @@ function deleteProduct(selectedId){
   showProducts();
 }
 
-
 function cleanHtml (){
   const unorderedList = document.querySelector("#list");
   while(unorderedList.firstChild){
     unorderedList.removeChild(unorderedList.firstChild);
   }
+}
+
+const searchForm = document.getElementsByClassName('.searchForm');
+
+searchForm.addEventListener(submit, searchProducts);
+
+function searchProducts(){
+  
 }

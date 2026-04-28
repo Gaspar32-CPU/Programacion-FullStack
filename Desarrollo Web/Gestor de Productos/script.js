@@ -1,4 +1,4 @@
-const products = [
+let products = [
   { id: 1, name: "Laptop", price: 800, category: "Computers" },
   { id: 2, name: "Smartphone", price: 500, category: "Mobile" },
   { id: 3, name: "Tablet", price: 300, category: "Mobile" },
@@ -8,13 +8,14 @@ const products = [
 
 showProducts();
 
+let selectedId = null;
+
 const productObj = {
   id: '',
   name: '',
   price: '',
   category: ''
 }
-
 
 const nameInput = document.querySelector("#name");
 const priceInput = document.querySelector("#price");
@@ -27,14 +28,15 @@ formulario.addEventListener("submit", validateForm);
 
 function validateForm(event){
   event.preventDefault();
-  if (nameInput.value == '' || priceInput == '' || categoriesInput == ''){
+  if (nameInput.value == '' || priceInput.value == '' || categoriesInput.value == ''){
     alert('All the field must be completed');
     return
   }
 
   if (isEditing){
-    editProduct();
+    editProduct(selectedId);
     isEditing = false;
+    selectedId = null;
   } else {
     productObj.id = Date.now();
     productObj.name = nameInput.value;
@@ -54,7 +56,6 @@ function addProduct(){
   document.getElementById('categories-selector').value = '';
 
   showProducts();
-  console.log(products)
 }
 
 
@@ -85,24 +86,62 @@ function showProducts(){
     listElement.dataset.id = id;
 
     const editButton = document.createElement("button");
-    //editButton.onclick = () => chargeProduct(prod);
+    editButton.onclick = () => {
+      isEditing = true;
+      selectedId = id;
+      chargeProduct(prod)
+    };
     editButton.innerHTML = '<img src="assets/editIcon.svg" alt="Edit icon" class="edit-button-icon">';
     editButton.classList.add('edit-button');
 
     containerActions.append(editButton);
 
     const deleteButton = document.createElement("button");
-    //deleteButton.onclick = () => deleteProduct(id);
+    deleteButton.onclick = () => {
+      selectedId = id;
+      deleteProduct(selectedId)
+    };
     deleteButton.innerHTML = '<img src="assets/deleteIcon.svg" alt="Delete icon" class="delete-button-icon">';
     deleteButton.classList.add('delete-button');
-
+                                                   
     containerActions.append(deleteButton);
 
     unorderedList.appendChild(listElement);
   });
 
 }
-function editProduct (){}
+
+function chargeProduct(prod){
+  document.getElementById('name').value = prod.name;
+  document.getElementById('price').value = prod.price;
+  document.getElementById('categories-selector').value = prod.category;
+}
+
+function editProduct(id){
+  products = products.map(product => {
+    if (product.id === id) {
+      return {
+        ...product,
+        name: nameInput.value,
+        price: priceInput.value,
+        category: categoriesInput.value
+      }
+    }
+    return product;
+  });
+
+  document.getElementById('name').value = '';
+  document.getElementById('price').value = '';
+  document.getElementById('categories-selector').value = '';
+
+  showProducts();
+}
+
+function deleteProduct(selectedId){
+  products = products.filter((product, ) => product.id !== selectedId);
+  showProducts();
+}
+
 
 function cleanHtml (){
   const unorderedList = document.querySelector("#list");

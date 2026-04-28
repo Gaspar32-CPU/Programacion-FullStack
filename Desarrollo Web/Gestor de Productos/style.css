@@ -2,6 +2,7 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    font-family:Verdana, Geneva, Tahoma, sans-serif ;
 }
 
 body{
@@ -26,9 +27,27 @@ header{
 }
 
 .searchForm{
-
+    background: white;
+    display: flex;
+    align-items: center;
+    padding: 0px 0px;
+    border-radius: 24px;
+    overflow: hidden;
 }
 
+.searchInput{
+    border: none;
+    outline: none;
+    background: transparent;
+    appearance: none;
+    padding: 14px 10px;
+}
+
+.searchButton{
+    border: none;
+    background: white;
+    padding: 0 8px;
+}
 
 .user-pic{
     color: antiquewhite;
@@ -62,16 +81,95 @@ aside{
     gap: 10px;
 }
 
-input, select{
-    padding: 5px 0;
+.input-field, select{
+    padding: 8px 10px;
+    border: 1px solid rgb(175, 175, 175);
+    border-radius: 8px;
+    outline: none;
 }
 
-.addBtn{
+.confirmButton{
     padding: 5px;
     margin: 10px 0;
+    border: 1px solid rgb(175, 175, 175);
+    border-radius: 5px;
+    outline: none;
 }
 
 main{
+    padding: 20px;
     width: 75%;
     height: 100%;
 }
+
+#list{
+    list-style-type: none; 
+    padding: 0;
+    margin: 0;
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+li{
+    background: rgb(209, 209, 209);
+    padding: 20px;
+    border: 1px solid rgb(175, 175, 175);
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.product-image{
+    width: 40%;
+}
+
+.card{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+    height: 100%;
+}
+
+.category-text{
+    width: fit-content;
+    font-size: 12px;
+    padding: 3px 8px;
+    border-radius: 20px;
+    background: rgb(31, 31, 31);
+    color: whitesmoke;
+}
+
+.container-actions{
+    display: flex;
+    justify-content: center;
+    margin: 14px 0 0 0 ;
+    width: 100%;
+    gap: 10px;
+}
+
+.edit-button, .delete-button{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2px 4px;
+    border: 1px solid rgb(175, 175, 175);
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+.edit-button:hover, .delete-button:hover, .confirmButton:hover {
+    background: rgb(230, 230, 230);
+}
+
+.edit-button:active, .delete-button:active, .confirmButton:hover {
+    background: rgb(245, 245, 245);
+}
+
+.edit-button-icon{}
+
+.delete-button-icon{}
+

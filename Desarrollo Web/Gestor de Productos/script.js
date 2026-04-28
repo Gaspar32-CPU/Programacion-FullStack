@@ -6,6 +6,7 @@ const products = [
   { id: 5, name: "Smartwatch", price: 200, category: "Wearables" }
 ];
 
+showProducts();
 
 const productObj = {
   id: '',
@@ -48,19 +49,64 @@ function validateForm(event){
 function addProduct(){
   products.push(productObj);
 
-  const unorderedList = document.getElementById("list");
+  document.getElementById('name').value = '';
+  document.getElementById('price').value = '';
+  document.getElementById('categories-selector').value = '';
 
-  const listElement = document.createElement("li");
-
-  listElement.innerHTML = `<img src="" alt="Product Image">
-    <div class="card">
-        <p class="id-card"></p>
-        <p class="name-card"></p>
-        <p class="price-card"></p>
-    </div>
-  `;
-
+  showProducts();
   console.log(products)
 }
 
+
+function showProducts(){
+
+  cleanHtml();
+
+  const unorderedList = document.getElementById("list");
+
+  products.forEach(prod => {
+    const { id, name, price, category } = prod;
+    
+    const listElement = document.createElement("li");
+
+    listElement.innerHTML = `
+      <img src="assets/generic-image.png" alt="Product Image" class="product-image">
+      <div class="card">
+          <p class="name-card">${name}</p>
+          <p class="price-card">$${price}</p>
+          <p class="category-text">${category}</p>
+          <div class="container-actions"></div>
+      </div>
+  `;
+
+    const containerActions = listElement.querySelector(".container-actions");
+
+
+    listElement.dataset.id = id;
+
+    const editButton = document.createElement("button");
+    //editButton.onclick = () => chargeProduct(prod);
+    editButton.innerHTML = '<img src="assets/editIcon.svg" alt="Edit icon" class="edit-button-icon">';
+    editButton.classList.add('edit-button');
+
+    containerActions.append(editButton);
+
+    const deleteButton = document.createElement("button");
+    //deleteButton.onclick = () => deleteProduct(id);
+    deleteButton.innerHTML = '<img src="assets/deleteIcon.svg" alt="Delete icon" class="delete-button-icon">';
+    deleteButton.classList.add('delete-button');
+
+    containerActions.append(deleteButton);
+
+    unorderedList.appendChild(listElement);
+  });
+
+}
 function editProduct (){}
+
+function cleanHtml (){
+  const unorderedList = document.querySelector("#list");
+  while(unorderedList.firstChild){
+    unorderedList.removeChild(unorderedList.firstChild);
+  }
+}

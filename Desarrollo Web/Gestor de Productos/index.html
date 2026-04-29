@@ -9,9 +9,9 @@
 <body>
     <header>
         <img src="assets/Logo-Tech_products.png" alt="Logo" class="logo">
-        <form action="/buscar" method="get" class="searchForm">
-            <input type="search" name="q" placeholder="Search..." aria-label="Buscar en el sitio" class="searchInput">
-            <button type="submit" class="searchButton">
+        <form action="" id="searchForm">
+            <input type="search" id="search" placeholder="Search..." aria-label="Buscar en el sitio" class="searchInput">
+            <button type="button" class="searchButton">
                 <img src="assets/searchIcon.svg" alt="Search Icon">
             </button>
         </form>
@@ -27,20 +27,22 @@
                 <label for="categories-selector">Category</label>
                 <select name="categories" id="categories-selector">
                     <option value="" disabled selected hidden>Select category</option>
-                    <option value="componentes-pc">Componentes de PC</option>
-                    <option value="perifericos">Periféricos</option>
-                    <option value="electrodomesticos">Electrodomésticos</option>
-                    <option value="fotografia">Fotografía</option>
-                    <option value="redes">Redes</option>
+                    <option value="Computers">Computers</option>
+                    <option value="Mobile">Mobile</option>
+                    <option value="Audio">Audio</option>
+                    <option value="Wearables">Wearables</option>
+                    <option value="Redes">Redes</option>
                 </select>
                 <button type="submit" class="confirmButton">Confirm</button>
             </form>
         </aside>
         <main>
+            <div id="filters">
+            </div>
             <ul id="list">
             </ul>
         </main>
     </div>
     <script src="script.js"></script>
 </body>
-</html>l
+</html>

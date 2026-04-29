@@ -6,107 +6,163 @@ const products = [
   { id: 5, name: "Smartwatch", price: 200, category: "Wearables" }
 ];
 
-showProducts();
-
-const productObj = {
-  id: '',
-  name: '',
-  price: '',
-  category: ''
-}
-
+let selectedId = null;
+let isEditing = false;
 
 const nameInput = document.querySelector("#name");
 const priceInput = document.querySelector("#price");
 const categoriesInput = document.querySelector("#categories-selector");
+const form = document.getElementById("form");
+const searchForm = document.getElementById("searchForm");
+const searchInput = document.getElementById("search");
+const productList = document.getElementById("list");
+const containerFilters = document.getElementById("filters");
+const filtersCategories = [...new Set(products.map(prod => prod.category))];
 
-let isEditing = false;
+form.addEventListener("submit", validateForm);
+searchForm.addEventListener("submit", event => event.preventDefault());
+searchInput.addEventListener("input", handleSearch);
 
-const formulario = document.getElementById("form");
-formulario.addEventListener("submit", validateForm);
+showProducts();
+showCategoryButtons();
 
-function validateForm(event){
+function validateForm(event) {
   event.preventDefault();
-  if (nameInput.value == '' || priceInput == '' || categoriesInput == ''){
-    alert('All the field must be completed');
-    return
+
+  const nameValue = nameInput.value.trim();
+  const priceValue = priceInput.value.trim();
+  const categoryValue = categoriesInput.value;
+
+  if (!nameValue || !priceValue || !categoryValue) {
+    alert("All fields must be completed");
+    return;
   }
 
-  if (isEditing){
-    editProduct();
+  if (isEditing) {
+    editProduct(selectedId, nameValue, Number(priceValue), categoryValue);
     isEditing = false;
+    selectedId = null;
   } else {
-    productObj.id = Date.now();
-    productObj.name = nameInput.value;
-    productObj.price = priceInput.value;
-    productObj.category = categoriesInput.value;
-
-    addProduct()
+    addProduct({
+      id: Date.now(),
+      name: nameValue,
+      price: Number(priceValue),
+      category: categoryValue
+    });
   }
 
-}
-
-function addProduct(){
-  products.push(productObj);
-
-  document.getElementById('name').value = '';
-  document.getElementById('price').value = '';
-  document.getElementById('categories-selector').value = '';
-
+  form.reset();
   showProducts();
-  console.log(products)
 }
 
+function addProduct(product) {
+  products.push(product);
+}
 
-function showProducts(){
-
+function showProducts() {
   cleanHtml();
-
-  const unorderedList = document.getElementById("list");
+  showCategoryButtons();
 
   products.forEach(prod => {
     const { id, name, price, category } = prod;
-    
     const listElement = document.createElement("li");
 
     listElement.innerHTML = `
       <img src="assets/generic-image.png" alt="Product Image" class="product-image">
       <div class="card">
-          <p class="name-card">${name}</p>
-          <p class="price-card">$${price}</p>
-          <p class="category-text">${category}</p>
-          <div class="container-actions"></div>
+        <p class="name-card">${name}</p>
+        <p class="price-card">$${price}</p>
+        <p class="category-text">${category}</p>
+        <div class="container-actions"></div>
       </div>
-  `;
-
-    const containerActions = listElement.querySelector(".container-actions");
-
+    `;
 
     listElement.dataset.id = id;
 
     const editButton = document.createElement("button");
-    //editButton.onclick = () => chargeProduct(prod);
+    editButton.type = "button";
+    editButton.classList.add("edit-button");
     editButton.innerHTML = '<img src="assets/editIcon.svg" alt="Edit icon" class="edit-button-icon">';
-    editButton.classList.add('edit-button');
-
-    containerActions.append(editButton);
+    editButton.addEventListener("click", () => {
+      isEditing = true;
+      selectedId = id;
+      chargeProduct(prod);
+    });
 
     const deleteButton = document.createElement("button");
-    //deleteButton.onclick = () => deleteProduct(id);
+    deleteButton.type = "button";
+    deleteButton.classList.add("delete-button");
     deleteButton.innerHTML = '<img src="assets/deleteIcon.svg" alt="Delete icon" class="delete-button-icon">';
-    deleteButton.classList.add('delete-button');
+    deleteButton.addEventListener("click", () => deleteProduct(id));
 
-    containerActions.append(deleteButton);
+    listElement.querySelector(".container-actions").append(editButton, deleteButton);
+    productList.appendChild(listElement);
+  });
+}
 
-    unorderedList.appendChild(listElement);
+function chargeProduct(prod) {
+  nameInput.value = prod.name;
+  priceInput.value = prod.price;
+  categoriesInput.value = prod.category;
+}
+
+function editProduct(id, name, price, category) {
+  const updatedProducts = products.map(product => {
+    if (product.id === id) {
+      return { ...product, name, price, category };
+    }
+    return product;
   });
 
+  products.length = 0;
+  products.push(...updatedProducts);
 }
-function editProduct (){}
 
-function cleanHtml (){
-  const unorderedList = document.querySelector("#list");
-  while(unorderedList.firstChild){
-    unorderedList.removeChild(unorderedList.firstChild);
-  }
+function deleteProduct(id) {
+  const remainingProducts = products.filter(product => product.id !== id);
+  products.length = 0;
+  products.push(...remainingProducts);
+  showProducts();
+}
+
+function cleanHtml() {
+  productList.innerHTML = "";
+}
+
+function handleSearch(event) {
+  const searchValue = event.target.value.trim().toLowerCase();
+  const productItems = productList.querySelectorAll("li");
+  const isFilter = searchValue.charAt(0) === "#";
+
+  productItems.forEach(item => {
+    if (isFilter) {
+      const searchedCategory = item.querySelector(".category-text");
+      const productCategory = searchedCategory ? searchedCategory.textContent.toLowerCase() : "";
+      item.style.display = productCategory.includes(searchValue.slice(1)) ? "" : "none";
+      return;
+    }
+
+    const nameElement = item.querySelector(".name-card");
+    const productName = nameElement ? nameElement.textContent.toLowerCase() : "";
+    item.style.display = productName.includes(searchValue) ? "" : "none";
+  });
+}
+
+function showCategoryButtons() {
+  if (!containerFilters) return;
+  containerFilters.innerHTML = "";
+
+  filtersCategories.forEach(category => {
+    const filterButton = document.createElement("button");
+    filterButton.type = "button";
+    filterButton.classList.add("category-filter-button");
+    filterButton.textContent = category;
+    filterButton.addEventListener("click", () => chargeFilter(category));
+    containerFilters.appendChild(filterButton);
+  });
+}
+
+function chargeFilter(filterValue) {
+  searchInput.value = `#${filterValue}`;
+  handleSearch({ target: searchInput });
 }

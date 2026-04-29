@@ -1,4 +1,4 @@
-let products = [
+const products = [
   { id: 1, name: "Laptop", price: 800, category: "Computers" },
   { id: 2, name: "Smartphone", price: 500, category: "Mobile" },
   { id: 3, name: "Tablet", price: 300, category: "Mobile" },
@@ -6,153 +6,133 @@ let products = [
   { id: 5, name: "Smartwatch", price: 200, category: "Wearables" }
 ];
 
-showProducts();
-
 let selectedId = null;
-
-const productObj = {
-  id: '',
-  name: '',
-  price: '',
-  category: ''
-}
+let isEditing = false;
 
 const nameInput = document.querySelector("#name");
 const priceInput = document.querySelector("#price");
 const categoriesInput = document.querySelector("#categories-selector");
+const form = document.getElementById("form");
+const searchForm = document.getElementById("searchForm");
+const searchInput = document.getElementById("search");
+const productList = document.getElementById("list");
 
-let isEditing = false;
+form.addEventListener("submit", validateForm);
+searchForm.addEventListener("submit", event => event.preventDefault());
+searchInput.addEventListener("input", handleSearch);
 
-const formulario = document.getElementById("form");
-formulario.addEventListener("submit", validateForm);
+showProducts();
 
-function validateForm(event){
+function validateForm(event) {
   event.preventDefault();
-  if (nameInput.value == '' || priceInput.value == '' || categoriesInput.value == ''){
-    alert('All the field must be completed');
-    return
+
+  const nameValue = nameInput.value.trim();
+  const priceValue = priceInput.value.trim();
+  const categoryValue = categoriesInput.value;
+
+  if (!nameValue || !priceValue || !categoryValue) {
+    alert("All fields must be completed");
+    return;
   }
 
-  if (isEditing){
-    editProduct(selectedId);
+  if (isEditing) {
+    editProduct(selectedId, nameValue, Number(priceValue), categoryValue);
     isEditing = false;
     selectedId = null;
   } else {
-    productObj.id = Date.now();
-    productObj.name = nameInput.value;
-    productObj.price = priceInput.value;
-    productObj.category = categoriesInput.value;
-
-    addProduct()
+    addProduct({
+      id: Date.now(),
+      name: nameValue,
+      price: Number(priceValue),
+      category: categoryValue
+    });
   }
 
-}
-
-function addProduct(){
-  products.push(productObj);
-
-  document.getElementById('name').value = '';
-  document.getElementById('price').value = '';
-  document.getElementById('categories-selector').value = '';
-
+  form.reset();
   showProducts();
 }
 
+function addProduct(product) {
+  products.push(product);
+}
 
-function showProducts(){
-
+function showProducts() {
   cleanHtml();
-
-  const unorderedList = document.getElementById("list");
 
   products.forEach(prod => {
     const { id, name, price, category } = prod;
-    
     const listElement = document.createElement("li");
 
     listElement.innerHTML = `
       <img src="assets/generic-image.png" alt="Product Image" class="product-image">
       <div class="card">
-          <p class="name-card">${name}</p>
-          <p class="price-card">$${price}</p>
-          <p class="category-text">${category}</p>
-          <div class="container-actions"></div>
+        <p class="name-card">${name}</p>
+        <p class="price-card">$${price}</p>
+        <p class="category-text">${category}</p>
+        <div class="container-actions"></div>
       </div>
-  `;
-
-    const containerActions = listElement.querySelector(".container-actions");
-
+    `;
 
     listElement.dataset.id = id;
 
     const editButton = document.createElement("button");
-    editButton.onclick = () => {
+    editButton.type = "button";
+    editButton.classList.add("edit-button");
+    editButton.innerHTML = '<img src="assets/editIcon.svg" alt="Edit icon" class="edit-button-icon">';
+    editButton.addEventListener("click", () => {
       isEditing = true;
       selectedId = id;
-      chargeProduct(prod)
-    };
-    editButton.innerHTML = '<img src="assets/editIcon.svg" alt="Edit icon" class="edit-button-icon">';
-    editButton.classList.add('edit-button');
-
-    containerActions.append(editButton);
+      chargeProduct(prod);
+    });
 
     const deleteButton = document.createElement("button");
-    deleteButton.onclick = () => {
-      selectedId = id;
-      deleteProduct(selectedId)
-    };
+    deleteButton.type = "button";
+    deleteButton.classList.add("delete-button");
     deleteButton.innerHTML = '<img src="assets/deleteIcon.svg" alt="Delete icon" class="delete-button-icon">';
-    deleteButton.classList.add('delete-button');
-                                                   
-    containerActions.append(deleteButton);
+    deleteButton.addEventListener("click", () => deleteProduct(id));
 
-    unorderedList.appendChild(listElement);
+    listElement.querySelector(".container-actions").append(editButton, deleteButton);
+    productList.appendChild(listElement);
   });
-
 }
 
-function chargeProduct(prod){
-  document.getElementById('name').value = prod.name;
-  document.getElementById('price').value = prod.price;
-  document.getElementById('categories-selector').value = prod.category;
+function chargeProduct(prod) {
+  nameInput.value = prod.name;
+  priceInput.value = prod.price;
+  categoriesInput.value = prod.category;
 }
 
-function editProduct(id){
-  products = products.map(product => {
+function editProduct(id, name, price, category) {
+  const updatedProducts = products.map(product => {
     if (product.id === id) {
-      return {
-        ...product,
-        name: nameInput.value,
-        price: priceInput.value,
-        category: categoriesInput.value
-      }
+      return { ...product, name, price, category };
     }
     return product;
   });
 
-  document.getElementById('name').value = '';
-  document.getElementById('price').value = '';
-  document.getElementById('categories-selector').value = '';
+  products.length = 0;
+  products.push(...updatedProducts);
+}
 
+function deleteProduct(id) {
+  const remainingProducts = products.filter(product => product.id !== id);
+  products.length = 0;
+  products.push(...remainingProducts);
   showProducts();
 }
 
-function deleteProduct(selectedId){
-  products = products.filter((product, ) => product.id !== selectedId);
-  showProducts();
+function cleanHtml() {
+  productList.innerHTML = "";
 }
 
-function cleanHtml (){
-  const unorderedList = document.querySelector("#list");
-  while(unorderedList.firstChild){
-    unorderedList.removeChild(unorderedList.firstChild);
-  }
+function handleSearch(event) {
+  const searchValue = event.target.value.trim().toLowerCase();
+  const productItems = productList.querySelectorAll("li");
+
+  productItems.forEach(item => {
+    const nameElement = item.querySelector(".name-card");
+    const productName = nameElement ? nameElement.textContent.toLowerCase() : "";
+    item.style.display = productName.includes(searchValue) ? "" : "none";
+  });
 }
 
-const searchForm = document.getElementsByClassName('.searchForm');
-
-searchForm.addEventListener(submit, searchProducts);
-
-function searchProducts(){
-  
-}

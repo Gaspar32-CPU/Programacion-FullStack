@@ -16,12 +16,15 @@ const form = document.getElementById("form");
 const searchForm = document.getElementById("searchForm");
 const searchInput = document.getElementById("search");
 const productList = document.getElementById("list");
+const containerFilters = document.getElementById("filters");
+const filtersCategories = [...new Set(products.map(prod => prod.category))];
 
 form.addEventListener("submit", validateForm);
 searchForm.addEventListener("submit", event => event.preventDefault());
 searchInput.addEventListener("input", handleSearch);
 
 showProducts();
+showCategoryButtons();
 
 function validateForm(event) {
   event.preventDefault();
@@ -58,6 +61,7 @@ function addProduct(product) {
 
 function showProducts() {
   cleanHtml();
+  showCategoryButtons();
 
   products.forEach(prod => {
     const { id, name, price, category } = prod;
@@ -144,3 +148,21 @@ function handleSearch(event) {
   });
 }
 
+function showCategoryButtons() {
+  if (!containerFilters) return;
+  containerFilters.innerHTML = "";
+
+  filtersCategories.forEach(category => {
+    const filterButton = document.createElement("button");
+    filterButton.type = "button";
+    filterButton.classList.add("category-filter-button");
+    filterButton.textContent = category;
+    filterButton.addEventListener("click", () => chargeFilter(category));
+    containerFilters.appendChild(filterButton);
+  });
+}
+
+function chargeFilter(filterValue) {
+  searchInput.value = `#${filterValue}`;
+  handleSearch({ target: searchInput });
+}

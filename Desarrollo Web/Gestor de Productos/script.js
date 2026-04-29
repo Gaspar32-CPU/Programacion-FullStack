@@ -128,8 +128,16 @@ function cleanHtml() {
 function handleSearch(event) {
   const searchValue = event.target.value.trim().toLowerCase();
   const productItems = productList.querySelectorAll("li");
+  const isFilter = searchValue.charAt(0) === "#";
 
   productItems.forEach(item => {
+    if (isFilter) {
+      const searchedCategory = item.querySelector(".category-text");
+      const productCategory = searchedCategory ? searchedCategory.textContent.toLowerCase() : "";
+      item.style.display = productCategory.includes(searchValue.slice(1)) ? "" : "none";
+      return;
+    }
+
     const nameElement = item.querySelector(".name-card");
     const productName = nameElement ? nameElement.textContent.toLowerCase() : "";
     item.style.display = productName.includes(searchValue) ? "" : "none";
